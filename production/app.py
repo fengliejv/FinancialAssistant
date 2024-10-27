@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, request
 
-from wrapper.openai import get_agent_executor
+from production.wrapper.openai import get_agent_executor
+from model.result import Result
+
 from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 cors = CORS(app)
@@ -23,12 +25,9 @@ def message():
           {"input": message_info},
           config={"configurable": {"session_id": session_id}},
       )
-      # 返回响应
-      return {
-         "result": result['output']
-      }
+      return Result(200,result['output']).to_json()
    else:
-      return 'This route only handles POST requests.'
+      return Result(400,'This route only handles POST requests.').to_json()
 
 
 if __name__ == '__main__':

@@ -91,7 +91,7 @@ $('#send_button').on('click', function (e) {
       messageInfo: msg
     };
 
-    fetch('http://127.0.0.1:5000/message', {
+    fetch('http://13.60.180.232/:5000/message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ $('#send_button').on('click', function (e) {
     .then(data => {
         console.log(data)
       	// show bot message
-		showBotMessage(data.result);
+		showBotMessage(data.message);
     })
     .catch(error => {
 		showBotMessage("There has been a problem with the server");

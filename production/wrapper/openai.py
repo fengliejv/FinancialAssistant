@@ -10,6 +10,9 @@ from langchain.agents.format_scratchpad.openai_tools import (
     format_to_openai_tool_messages,
 )
 from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputParser
+
+from production.config.config import Config
+
 MEMORY_KEY = "chat_history"
 
 
@@ -38,7 +41,7 @@ def get_agent_executor(session_id):
             MessagesPlaceholder(variable_name="agent_scratchpad"),
         ]
     )
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    llm = ChatOpenAI(model=Config.MODEL, temperature=0)
     search = TavilySearchResults()
     tools = [search]
     llm_with_tools = llm.bind_tools(tools)
@@ -57,7 +60,7 @@ def get_agent_executor(session_id):
     )
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     message_history = RedisChatMessageHistory(
-        url="redis://13.60.180.232:6379", ttl=600, session_id= session_id
+        url=Config.REDIS_URL, ttl=600, session_id= session_id
     )
     # message_history = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     agent_with_chat_history = RunnableWithMessageHistory(
